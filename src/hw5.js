@@ -26,6 +26,16 @@ function degrees_to_radians(degrees) {
   return degrees * (pi/180);
 }
 
+// Create three-point basketball court lines 
+function createThreePointArcMesh(positionX, rotationZDegrees, courtLineMaterial) {
+  const arcGeometry = new THREE.RingGeometry(6.7, 6.9, 16, 1, 0, Math.PI); 
+  const arcMesh = new THREE.Mesh(arcGeometry, courtLineMaterial);
+  arcMesh.rotation.x = degrees_to_radians(-90);
+  arcMesh.rotation.z = degrees_to_radians(rotationZDegrees);
+  arcMesh.position.set(positionX, 0.11, 0);
+  return arcMesh;
+}
+
 // Create basketball court
 function createBasketballCourt() {
   // Court floor - just a simple brown surface
@@ -37,9 +47,27 @@ function createBasketballCourt() {
   const court = new THREE.Mesh(courtGeometry, courtMaterial);
   court.receiveShadow = true;
   scene.add(court);
-  
-  // Note: All court lines, hoops, and other elements have been removed
-  // Students will need to implement these features
+
+  // White court lines 
+  const courtLineMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+  // Center line
+  const centerLineGeometry = new THREE.BoxGeometry(0.2, 0, 15);
+  const centerLineMesh = new THREE.Mesh(centerLineGeometry, courtLineMaterial);
+  centerLineMesh.position.y = 0.11;
+  scene.add(centerLineMesh);
+
+  // Center circle
+  const circleGeometry = new THREE.RingGeometry(2, 2.2, 32);
+  const circleMesh = new THREE.Mesh(circleGeometry, courtLineMaterial);
+  circleMesh.rotation.x = degrees_to_radians(-90);
+  circleMesh.position.y = 0.11;
+  scene.add(circleMesh);
+
+  // Three-point lines
+  scene.add(createThreePointArcMesh(15, 90, courtLineMaterial));   // Right side
+  scene.add(createThreePointArcMesh(-15, -90, courtLineMaterial)); // Left side
+
 }
 
 // Create all elements
@@ -87,6 +115,7 @@ function animate() {
   controls.update();
   
   renderer.render(scene, camera);
+
 }
 
 animate();
