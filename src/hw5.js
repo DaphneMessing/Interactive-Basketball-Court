@@ -78,7 +78,6 @@ function createHoop(positionX) {
     opacity: 0.8,
   });
   const backboardMesh = new THREE.Mesh(backboardGeometry, backboardMaterial);
-
   if (positionX < 0) {
     backboardMesh.position.set(positionX + 1, 5, 0);
     backboardMesh.rotation.y = degrees_to_radians(90);
@@ -86,7 +85,6 @@ function createHoop(positionX) {
     backboardMesh.position.set(positionX - 1, 5, 0);
     backboardMesh.rotation.y = degrees_to_radians(-90);
   }
-
   backboardMesh.castShadow = true;
   backboardMesh.receiveShadow = true;
   scene.add(backboardMesh);
@@ -124,13 +122,11 @@ function createHoop(positionX) {
     const line = new THREE.Line(geometry, netMaterial);
     netGroup.add(line);
   }
-
   if (positionX < 0) {
     netGroup.position.set(positionX + 1.3, 4.5, 0);
   } else {
     netGroup.position.set(positionX - 1.3, 4.5, 0);
   }
-
   scene.add(netGroup);
 
   // Pole
@@ -155,13 +151,79 @@ function createHoop(positionX) {
   scene.add(armMesh);
 }
 
+function createBasketball() {
+  const basketballGroup = new THREE.Group();
+
+  // Basketball base mesh (orange)
+  const ballGeometry = new THREE.SphereGeometry(0.12, 64, 64);
+  const ballMaterial = new THREE.MeshPhongMaterial({
+    color: 0xff4500,
+    shininess: 30
+  });
+  const ballMesh = new THREE.Mesh(ballGeometry, ballMaterial);
+  ballMesh.castShadow = true;
+  ballMesh.receiveShadow = true;
+  basketballGroup.add(ballMesh);
+
+  const ballRadius = 0.118; // Slightly smaller so seams are visible outside
+  const seamMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
+
+  // Helper function to create seam from points
+  function createSeam(points) {
+    const curve = new THREE.CatmullRomCurve3(points);
+    const tubeGeometry = new THREE.TubeGeometry(curve, 32, 0.003, 8, false);
+    return new THREE.Mesh(tubeGeometry, seamMaterial);
+  }
+
+  function createVerticalSeam(offsetAngle) {
+    const seamPoints = [];
+    for (let i = 0; i <= 32; i++) {
+      const t = i / 32;
+      const phi = Math.PI * t;
+      const theta = offsetAngle + Math.sin(phi * 2) * 0.4;
+      const x = ballRadius * Math.sin(phi) * Math.cos(theta);
+      const y = ballRadius * Math.cos(phi);
+      const z = ballRadius * Math.sin(phi) * Math.sin(theta);
+      seamPoints.push(new THREE.Vector3(x, y, z));
+    }
+    const seam = createSeam(seamPoints);
+    basketballGroup.add(seam);
+  }
+
+  // 🔄 Create 6 seams at 0°, 60°, 120°, 180°, 240°, 300°
+  for (let i = 0; i < 6; i++) {
+    const angle = (i * Math.PI) / 3; // 60-degree increments
+    createVerticalSeam(angle);
+  }
+
+
+  // Horizontal equator seam
+  const seamEquator = [];
+  const equatorPhi = Math.PI / 2;
+  for (let i = 0; i <= 32; i++) {
+    const theta = (i / 32) * 2 * Math.PI;
+    seamEquator.push(new THREE.Vector3(
+      ballRadius * Math.sin(equatorPhi) * Math.cos(theta),
+      ballRadius * Math.cos(equatorPhi),
+      ballRadius * Math.sin(equatorPhi) * Math.sin(theta)
+    ));
+  }
+  basketballGroup.add(createSeam(seamEquator));
+
+  // Position at center court
+  basketballGroup.position.set(0, 0.25, 0);
+  basketballGroup.rotation.y = Math.PI / 6;
+  basketballGroup.rotation.x = Math.PI / 12;
+
+  scene.add(basketballGroup);
+}
+
 
 // Create all elements
 createBasketballCourt();
 createHoop(-15); // Left side
 createHoop(15);  // Right side
-
-
+createBasketball();
 
 
 // Set camera position for better view
