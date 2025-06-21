@@ -1,15 +1,94 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>HW5</title>
-		<style>
-			body { margin: 0; }
-		</style>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'></script>
-	</head>
-	<body>
-		<script src="src/hw5.js" type="module"></script>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Basketball Court</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+	  background-color: black;
+    }
 
-	</body>
+    canvas {
+      display: block;
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  z-index: 0;
+    }
+
+    #canvas-container {
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  width: 100vw;
+	  height: 100vh;
+	  overflow: hidden;
+	  z-index: 0;
+	}
+
+	/* Score Display Container */
+	#score-container {
+	position: absolute;
+	top: 10px;
+	left: 50%;
+	transform: translateX(-50%);
+	color: yellow;
+	font-family: Arial, sans-serif;
+	font-size: 24px;
+	background-color: #2e2e5d; /* deep purple background */
+	padding: 15px 40px;
+	border-radius: 12px;
+	text-align: center;
+	z-index: 10;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+	}
+
+
+    /* Controls Display Container */
+    #controls-container {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 10;
+    }
+  </style>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'></script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+
+  <!-- Score Display -->
+  <div id="score-container">
+    <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+      <div style="text-align: center;">
+        <div style="font-size: 14px; color: white;">TEAM A</div>
+        <div style="font-size: 36px; font-weight: bold;">00</div>
+      </div>
+      <div style="background-color: red; color: white; font-weight: bold; padding: 4px 8px; border-radius: 4px;">VS</div>
+      <div style="text-align: center;">
+        <div style="font-size: 14px; color: white;">TEAM B</div>
+        <div style="font-size: 36px; font-weight: bold;">00</div>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Controls Display -->
+  <div id="controls-container">
+    <h3>Controls</h3>
+    <p>Press 'O' to toggle Orbit Controls</p>
+  </div>
+
+  <!-- Load the main scene script -->
+  <script src="src/hw5.js" type="module"></script>
+
+</body>
 </html>

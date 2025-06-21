@@ -5,7 +5,10 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+// document.body.appendChild(renderer.domElement);
+const canvasContainer = document.getElementById('canvas-container');
+canvasContainer.appendChild(renderer.domElement);
+
 // Set background color
 scene.background = new THREE.Color(0x000000);
 
@@ -33,6 +36,7 @@ function createThreePointArcMesh(positionX, rotationZDegrees, courtLineMaterial)
   arcMesh.rotation.x = degrees_to_radians(-90);
   arcMesh.rotation.z = degrees_to_radians(rotationZDegrees);
   arcMesh.position.set(positionX, 0.11, 0);
+  arcMesh.receiveShadow = true;
   return arcMesh;
 }
 
@@ -55,6 +59,7 @@ function createBasketballCourt() {
   const centerLineGeometry = new THREE.BoxGeometry(0.2, 0, 15);
   const centerLineMesh = new THREE.Mesh(centerLineGeometry, courtLineMaterial);
   centerLineMesh.position.y = 0.11;
+  centerLineMesh.receiveShadow = true;
   scene.add(centerLineMesh);
 
   // Center circle
@@ -62,6 +67,7 @@ function createBasketballCourt() {
   const circleMesh = new THREE.Mesh(circleGeometry, courtLineMaterial);
   circleMesh.rotation.x = degrees_to_radians(-90);
   circleMesh.position.y = 0.11;
+  circleMesh.receiveShadow = true;
   scene.add(circleMesh);
 
   // Three-point lines
@@ -162,7 +168,6 @@ function createBasketball() {
   });
   const ballMesh = new THREE.Mesh(ballGeometry, ballMaterial);
   ballMesh.castShadow = true;
-  ballMesh.receiveShadow = true;
   basketballGroup.add(ballMesh);
 
   const ballRadius = 0.118; // Slightly smaller so seams are visible outside
@@ -244,10 +249,10 @@ instructionsElement.style.color = 'white';
 instructionsElement.style.fontSize = '16px';
 instructionsElement.style.fontFamily = 'Arial, sans-serif';
 instructionsElement.style.textAlign = 'left';
-instructionsElement.innerHTML = `
-  <h3>Controls:</h3>
-  <p>O - Toggle orbit camera</p>
-`;
+// instructionsElement.innerHTML = `
+//   <h3>Controls:</h3>
+//   <p>O - Toggle orbit camera</p>
+// `;
 document.body.appendChild(instructionsElement);
 
 // Handle key events
